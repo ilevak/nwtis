@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:h="http://xmlns.jcp.org/jsf/html"
+       xmlns:f="http://xmlns.jcp.org/jsf/core"
+       xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Pregled aerodroma</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+        <h:outputStylesheet library="css" name="default.css"></h:outputStylesheet>
+
+        <h:outputStylesheet library="css" name="cssLayout.css"></h:outputStylesheet>
+        <h:outputStylesheet library="css" name="alternative.css"></h:outputStylesheet>
+    </h:head>
+    <h:body onload="#{pregledAerodroma.dajMojeAerodrome()}">
+
+
+
+
+        <h:form id="form1" style="height:100vh">
+            <div style="display: block; height: 15%; width:100%">
+                <h:outputText value="&lt;br/&gt;" escape="false" />
+                <h:outputLink value="#{application.contextPath}/index.xhtml">Pocetna stranica</h:outputLink>&nbsp;&nbsp;
+
+                <h:outputLink value="#{application.contextPath}/prijavaKorisnika.xhtml">Prijava</h:outputLink>&nbsp;&nbsp;
+
+                <h:outputLink value="#{application.contextPath}/dodavanjeAerodroma.xhtml">Dodavanje aerodroma</h:outputLink>&nbsp;&nbsp;
+                <h:outputText value="&lt;br/&gt;" escape="false" />
+                <h:outputLabel>Od intervala</h:outputLabel>&nbsp;
+                <h:inputText value="#{pregledAerodroma.odVrijeme}"/>&nbsp;
+                <h:outputLabel>Do intervala</h:outputLabel>&nbsp;
+                <h:inputText value="#{pregledAerodroma.doVrijeme}"/>&nbsp;
+                <h:outputText value="&lt;br/&gt;" escape="false" />
+
+            </div>
+            <div style="display: block; overflow: scroll; height: 60%;">
+                <p:dataTable id="tablica" style="margin-left: 10%;margin-right: 10%;margin-bottom: 0;margin-top: 0" value="#{pregledAerodroma.aerodromiKorisnika}"
+                             var="a">
+                    <p:column>
+                        <f:facet name="header" >Icao</f:facet>#{a.icao}
+                    </p:column>
+                    <p:column>
+                        <!-- {p['pregledAerodroma.naziv'] je za  dohvacanje jezicne promjene!-->
+                        <f:facet name="header" >Naziv</f:facet>#{a.naziv}
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header" >Drzava</f:facet>#{a.drzava}
+                    </p:column>
+                    <p:column>
+                        <!-- tu treba sredit prvi gumb da otvara novu stranicu!!!!!  -->
+                        <p:commandButton  value="Preuzmi avione" action="pregledAviona.xhtml">
+                            <f:actionListener binding="#{pregledAerodroma.spremiIcao(a.icao)}" />
+                        </p:commandButton>
+                        <p:commandButton update="form1" value="Preuzmi GPS i meteo" action="#{pregledAerodroma.dajGPSPodatke(a.icao, a.naziv)}"/>
+
+                    </p:column>
+
+                </p:dataTable>
+            </div>
+            <div  id="podaci" style="display: block;  height: 25%;">
+                <h:outputText value="GPS BP dužine" escape="false" />&nbsp;&nbsp;
+                <h:outputText  value="#{pregledAerodroma.gpsBPduzina}" escape="false" />&nbsp;&nbsp;
+                <h:outputText value="GPS BP širine" escape="false" />&nbsp;&nbsp;
+                <h:outputText value="#{pregledAerodroma.gpsBPSirina}" escape="false" />&nbsp;&nbsp;
+                <h:outputText value="&lt;br/&gt;" escape="false" />
+                <h:outputText value="GPS NA dužine" escape="false" />&nbsp;&nbsp;
+                <h:outputText value="#{pregledAerodroma.gpsNAduzina}" escape="false" />&nbsp;&nbsp;
+                <h:outputText value="GPS NA širine" escape="false" />&nbsp;&nbsp;
+                <h:outputText value="#{pregledAerodroma.gpsNASirina}" escape="false" />&nbsp;&nbsp;
+                <h:outputText value="&lt;br/&gt;" escape="false" />
+                <h:outputText value="Temp:" escape="false" />&nbsp;&nbsp;
+                <h:outputText value="#{pregledAerodroma.temperatura}" escape="false" />
+                <h:outputText value="&lt;br/&gt;" escape="false" />
+                <h:outputText value="Vlaga:" escape="false" />&nbsp;&nbsp;
+                <h:outputText value="#{pregledAerodroma.vlaga}" escape="false" />
+            </div>
+        </h:form>
+
+
+    </h:body>
+</html>
+

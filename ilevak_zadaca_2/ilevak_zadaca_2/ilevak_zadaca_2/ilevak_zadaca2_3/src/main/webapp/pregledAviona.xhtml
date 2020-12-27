@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:h="http://xmlns.jcp.org/jsf/html"
+       xmlns:f="http://xmlns.jcp.org/jsf/core"
+       xmlns:p="http://primefaces.org/ui">
+    <h:head >
+        <title>Pregled aviona</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+        <h:outputStylesheet library="css" name="default.css"></h:outputStylesheet>
+
+        <h:outputStylesheet library="css" name="cssLayout.css"></h:outputStylesheet>
+        <h:outputStylesheet library="css" name="alternative.css"></h:outputStylesheet>
+    </h:head>
+    <h:body onload="#{pregledAviona.dajAvione()}">
+        <h:form id="form1" style="height:100vh">
+            <h:outputText value="&lt;br/&gt;" escape="false" />
+            <p:commandButton value="Vrati se na aerodrome" action="pregledAerodroma.xhtml"/>
+            <h:outputText value="&lt;br/&gt;" escape="false" />
+            <h:outputText value="&lt;br/&gt;" escape="false" />
+            <div>
+            <p:dataTable id="tablica" rows="7" paginator="true"  style="height: auto;margin-left: 10%;margin-right: 10%;margin-bottom: 0;margin-top: 0" value="#{pregledAviona.avioni}" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="7,10,14" var="a">
+                <p:column>
+                    <f:facet name="header" >Icao24</f:facet>#{a.icao24}
+                </p:column>
+                <p:column>
+                    <!-- {p['pregledAerodroma.naziv'] je za  dohvacanje jezicne promjene!-->
+                    <f:facet name="header" >Callsign</f:facet>#{a.callsign}
+                </p:column>
+                <p:column>
+                    <f:facet name="header" >Prvo vrijeme</f:facet>#{pregledAviona.millsDatum(a.firstSeen)}
+                </p:column>
+                <p:column>
+                    <f:facet name="header" >Zadnje vrijeme</f:facet>#{pregledAviona.millsDatum(a.lastSeen)}
+                </p:column>
+                <p:column>
+                    <f:facet name="header" >Polazište</f:facet>#{a.estDepartureAirport}
+                </p:column>
+                <p:column>
+                    <f:facet name="header" >Odredište</f:facet>#{a.estArrivalAirport}
+                </p:column>
+                <p:column>
+                    <p:commandButton update="form1"  value="Najveca visina leta" action="#{pregledAviona.najvecaVisinaLeta(a.icao24, a.firstSeen, a.lastSeen)}"/>
+                </p:column>
+
+            </p:dataTable>
+            </div>
+            <div>
+            <h:outputText value="Vrijeme:" escape="false" />&nbsp;&nbsp;
+            <h:outputText   value="#{pregledAviona.vrijeme}" escape="false" />&nbsp;&nbsp;
+            <h:outputText value="&lt;br/&gt;" escape="false" />
+            <h:outputText value="Visina:" escape="false" />&nbsp;&nbsp;
+            <h:outputText value="#{pregledAviona.visina}" escape="false" />
+            <h:outputText value="&lt;br/&gt;" escape="false" />
+            <h:outputText value="GPS Š" escape="false" />&nbsp;&nbsp;
+            <h:outputText  value="#{pregledAviona.GPSsirina}" escape="false" />&nbsp;&nbsp;
+            <h:outputText value="GPS V" escape="false" />&nbsp;&nbsp;
+            <h:outputText  value="#{pregledAviona.GPSvisina}" escape="false" />&nbsp;&nbsp;
+            <h:outputText value="&lt;br/&gt;" escape="false" />
+            <h:outputText value="Adresa:" escape="false" />&nbsp;&nbsp;
+            <h:outputText  value="#{pregledAviona.adresa}" escape="false" />
+            </div>
+        </h:form>
+
+
+    </h:body>
+</html>
+
