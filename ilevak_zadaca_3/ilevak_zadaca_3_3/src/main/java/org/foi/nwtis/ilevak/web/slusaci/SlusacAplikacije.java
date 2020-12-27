@@ -1,0 +1,67 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.foi.nwtis.ilevak.web.slusaci;
+
+import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
+import org.foi.nwtis.ilevak.konfiguracije.NeispravnaKonfiguracija;
+import org.foi.nwtis.ilevak.konfiguracije.NemaKonfiguracije;
+import org.foi.nwtis.ilevak.konfiguracije.bp.BP_Konfiguracija;
+/*
+ * Web application lifecycle listener.
+ *
+ * @author ivale
+ */
+
+/**
+ *
+ * @author ivale
+ */
+
+@WebListener
+public class SlusacAplikacije implements ServletContextListener {
+
+
+    /**
+     *
+     * @param sce
+     */
+    @Override
+    public void contextInitialized(ServletContextEvent sce) {
+        ServletContext sc = sce.getServletContext();
+        String datoteke = sc.getInitParameter("konfiguracija");
+
+        String putanja = sc.getRealPath("WEB-INF") + File.separator + datoteke;
+     
+            BP_Konfiguracija konf;
+        try {
+            konf = new BP_Konfiguracija(putanja);
+             sc.setAttribute("BP_Konfig", konf);
+        } catch (NeispravnaKonfiguracija ex) {
+            Logger.getLogger(SlusacAplikacije.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NemaKonfiguracije ex) {
+            Logger.getLogger(SlusacAplikacije.class.getName()).log(Level.SEVERE, null, ex);
+        }
+           
+         
+        System.out.println("Aplikacija je pokrenuta!");
+    }
+
+    /**
+     *
+     * @param sce
+     */
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+       
+        System.out.println("Aplikacija je zaustavljana!");
+    }
+}

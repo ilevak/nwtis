@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>I.Levak - Zadaca 3</title>
+    </h:head>
+    <h:body>
+        
+        <h:outputLink value="#{application.contextPath}/filtriraniAerodromi.xhtml">Filtriranje aerodroma</h:outputLink>&nbsp;&nbsp;
+        <h:form id="form">
+            <!--
+            ponavljanje: value unutar listboxa se sprema kao 
+            setter unuta prikazkorisnika dok selectItems sadrži 
+            sve vrijednosti liste korisnici uz to prikazuje
+            prezime pa ime a kao vrijednost vraća korisničko ime
+            -->
+
+            <h:panelGroup id="p1" rendered="#{prikazKorisnika.prikaziKorisnike}">
+                <p:dataTable id="korisnik" rows="7" paginator="true"  
+                             style="height: auto;margin-left: 10%;margin-right: 10%;margin-bottom: 0;margin-top: 0" value="#{prikazKorisnika.korisnici}" 
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="7,10,14" var="k">
+                    <p:column>
+                        <f:facet name="header" >Ime</f:facet>#{k.ime}
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header" >Prezime</f:facet>#{k.prezime}
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header" >Broj aerodroma</f:facet>#{k.myairportsList.size()}
+                    </p:column>
+                    <p:column>
+                        <p:commandButton value="Daj aerodrome" action="#{prikazKorisnika.dohvatiKorisnikoveAerodrome(k)}" ajax="true" process="korisnik" update="form">
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>    
+            </h:panelGroup>
+
+            <h:panelGroup id="p2" rendered="#{prikazKorisnika.prikaziAerodrome}">
+                <p:dataTable id="aerodromi" rows="7" paginator="true"  
+                             style="height: auto;margin-left: 10%;margin-right: 10%;margin-bottom: 0;margin-top: 0" 
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="7,10,14" value="#{prikazKorisnika.aerodromi}"  var="a"
+                             >
+                    <p:column>
+                        <f:facet name="header" >Ident</f:facet>#{a.ident.ident}
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header" >Koordinate</f:facet>#{a.ident.coordinates}
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header" >Ime</f:facet>#{a.ident.name}
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header" >Tip</f:facet>#{a.ident.type}
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header" >Municipality</f:facet>#{a.ident.municipality}
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header" >Broj preuzetih letova</f:facet>#{a.ident.airplanesList.size()}
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header" >Broj korisnika</f:facet>#{a.ident.myairportsList.size()}
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header" >Broj dana</f:facet>#{a.ident.myairportslogList.size()}
+                    </p:column>
+                    <p:column>
+                        <p:commandButton value="Prikazi datume preuzimanja" action="#{prikazKorisnika.dohvatiDatume(a.ident)}" ajax="true" process="aerodromi" update="form"/>
+                    </p:column>
+                </p:dataTable>
+            </h:panelGroup>
+            <h:panelGroup id="p3" rendered="#{prikazKorisnika.prikaziDatume}">
+                <p:dataTable id="datumi" rows="7" paginator="true"  
+                             style="height: auto;margin-left: 10%;margin-right: 10%;margin-bottom: 0;margin-top: 0" 
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="7,10,14" value="#{prikazKorisnika.myairportslogs}"  var="m"
+                             >
+                    <p:column>
+                        <f:facet name="header" >Datum polijetanja</f:facet>#{prikazKorisnika.pretvoriDatum(m.getMyairportslogPK().getFlightdate())}
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header" >Vrijeme spremanja</f:facet>#{prikazKorisnika.pretvoriDatumVrijeme(m.getStored())}
+                    </p:column>
+                    <p:column>
+                        <p:commandButton value="Izbrisi aerorom" action="#{prikazKorisnika.izbrisiAerodrom(m)}" ajax="true" process="datumi" update="form"/>
+                    </p:column>
+                </p:dataTable>
+                <p:commandButton value="Vrati na pocetak" action="#{prikazKorisnika.vratiNaPocetak()}" ajax="true"  update="form"/>
+            </h:panelGroup>
+        </h:form>
+    </h:body>
+</html>
+

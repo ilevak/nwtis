@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>I.Levak zadaca_3</title>
+    </h:head>
+    <h:body>
+        <h:outputLink value="#{application.contextPath}/prikazKorisnika.xhtml">Brisanje letova</h:outputLink>&nbsp;&nbsp;
+            
+        <script type="text/javascript">
+            window.addEventListener("load", onLoad, false);
+
+            function onLoad() {
+                var wsUri = "ws://localhost:8084/ilevak_zadaca_3_3/aerodromi";
+                websocket = new WebSocket(wsUri);
+                websocket.onmessage = function onMessage(evt) {
+                    var res = evt.data.split(";");
+                    document.getElementById("form:brojAerodroma").innerHTML = res[0];
+                    //dohvaca element brojKorinika i daje mu vrjednost koja je primljena iz poruke
+                    document.getElementById("form:osvjezeno").innerHTML = res[1];
+                };
+            }
+
+            function posaljiPoruku(message) {
+
+                websocket.send(message);
+                return true;
+            }
+        </script>
+        <h:form id="form">
+            <h:panelGroup id="p1">
+                <h:outputText value="Broj aerodroma:" escape="false" />&nbsp;&nbsp;
+                <h:outputText id="brojAerodroma" value="#{filtriraniAerodromi.airports.size()}" escape="false" />&nbsp;&nbsp;
+                <h:outputText value="Vrijeme osvježavanja podataka;" escape="false" />&nbsp;&nbsp;
+                <h:outputText id="osvjezeno" value="Nije jos osvjezeno!" escape="false" />&nbsp;&nbsp;
+                <br/>
+                <h:selectOneMenu id="korisnik" value="#{filtriraniAerodromi.odabraniKorisnik}">
+                    <f:selectItems  value="#{filtriraniAerodromi.korisnici}" var="k" itemLabel="#{k.prezime}  #{k.ime}" itemValue="#{k.korIme}"  />
+                </h:selectOneMenu>
+                <br/> <br/>
+                 <h:inputText id="nazivAerodroma" value="#{filtriraniAerodromi.nazivAerodroma}"/>&nbsp;
+                <h:commandButton value="Pretrazi aerodrome CAPI" action="#{filtriraniAerodromi.dohvatiAerodrome()}">
+                    <f:ajax execute='korisnik nazivAerodroma' render='form:p2'/>
+                </h:commandButton>
+                 <h:commandButton value="Pretrazi aerodrome JPQL" action="#{filtriraniAerodromi.dohvatiAerodromeJPQL()}">
+                    <f:ajax execute='korisnik nazivAerodroma' render='form:p2'/>
+                </h:commandButton>
+            </h:panelGroup>
+
+
+            <h:panelGroup id="p2" >
+                <h:outputText id="porukaGreske" style="color: red" value="#{filtriraniAerodromi.porukaGreske}" escape="false" /><br/>
+                <p:dataTable id="aerodromi" rows="7"  
+                             paginator="true"  
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="7,10,14"
+                             style="height: auto;margin-left: 5%;margin-right: 5%;margin-bottom: 0;margin-top: 0" 
+                             value="#{filtriraniAerodromi.airports}"  var="a"
+                             rendered="#{filtriraniAerodromi.prikaziAerodrome}">
+
+                    <p:column>
+                        <f:facet name="header" >Ident</f:facet>#{a.ident}
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header" >Koordinate</f:facet>#{a.coordinates}
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header" >Naziv</f:facet>#{a.name}
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header" >Trenutna vlaga</f:facet>#{filtriraniAerodromi.dohvatiVlagu(a)}
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header" >Trenutna temperatura</f:facet>#{filtriraniAerodromi.dohvatiTemperaturu(a)}
+                    </p:column>
+                    <p:column>
+                        <!--ako želim proslijedit vrijednost jsf u js onda ga je potrebno staviti u jednostruke navodnike -->
+                        <p:commandButton id="btnDodajAerodrom" action="#{filtriraniAerodromi.ispisines(a)}" value="Dodaj aerodrom" onclick="posaljiPoruku('#{a.ident}' + ';' + '#{filtriraniAerodromi.odabraniKorisnik}')
+                 " ajax="true" update="form:aerodromi"/>
+                    </p:column>
+                </p:dataTable>
+                <!--      <h:commandButton id="btnDodajAerodrom" value="Dodajaerodrom" action="" onclick="if(!addMessage() return false" />
+                
+                addMessage('{a.ident}'+';'+'{filtriraniAerodromi.odabraniKorisnik}
+                  <h:commandButton value="PP" action="" onclick="
+                          websocket.send('message');
+                          return false;">
+                  </h:commandButton>
+                -->
+
+            </h:panelGroup>
+
+
+
+        </h:form>
+
+
+
+
+
+    </h:body>
+</html>
+
