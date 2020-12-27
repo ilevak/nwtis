@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: org.foi.nwtis.ilevak.konfiguracije.bp.BP_KonfiguracijaTest
+-------------------------------------------------------------------------------
+Tests run: 10, Failures: 0, Errors: 0, Skipped: 8, Time elapsed: 0.047 s - in org.foi.nwtis.ilevak.konfiguracije.bp.BP_KonfiguracijaTest
